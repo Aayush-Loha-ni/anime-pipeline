@@ -1,0 +1,23 @@
+{
+  "_comment": "Reference template, two stages (run keyframe first, stage the PNG as keyframe.png, then motion). Stage 1: Qwen-Image-2.1 keyframe (GGUF DiT, TE on CPU). Stage 2: MiniMax H3 Ref2VA int8 (PDD 8-step + skin + camera LoRAs). Mirrors episode_producer.py builders.",
+  "30": {"class_type": "UnetLoaderGGUF", "inputs": {"unet_name": "qwen_image_2.1_Q6_K.gguf"}},
+  "31": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen3vl_8b_int8_convrot.safetensors", "type": "qwen_image", "device": "cpu"}},
+  "32": {"class_type": "VAELoader", "inputs": {"vae_name": "qwen_image_2.1_vae_bf16.safetensors"}},
+  "33": {"class_type": "TextEncodeQwenImage21", "_meta": {"title": "Keyframe Prompt"}, "inputs": {"prompt": "PROMPT", "negative_prompt": "NEGATIVE", "clip": ["31", 0], "vae": ["32", 0], "resolution": 1024}},
+  "34": {"class_type": "EmptyLatentImage", "inputs": {"width": 960, "height": 544, "batch_size": 1}},
+  "35": {"class_type": "KSampler", "inputs": {"seed": 1000, "steps": 30, "cfg": 6.0, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1.0, "model": ["30", 0], "positive": ["33", 0], "negative": ["33", 1], "latent_image": ["34", 0]}},
+  "36": {"class_type": "VAEDecode", "inputs": {"samples": ["35", 0], "vae": ["32", 0]}},
+  "37": {"class_type": "SaveImage", "inputs": {"filename_prefix": "anime/keyframe", "images": ["36", 0]}},
+  "1": {"class_type": "UNETLoader", "inputs": {"unet_name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors", "weight_dtype": "default"}},
+  "0": {"class_type": "CLIPLoader", "inputs": {"clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors", "type": "minimax", "device": "cpu"}},
+  "7": {"class_type": "VAELoader", "inputs": {"vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"}},
+  "20": {"class_type": "LoraLoader", "inputs": {"model": ["1", 0], "clip": ["0", 0], "lora_name": "MiniMax-H3-Ref2VA-Acc-8Step.safetensors", "strength_model": 1.0, "strength_clip": 1.0}},
+  "21": {"class_type": "LoraLoader", "inputs": {"model": ["20", 0], "clip": ["20", 1], "lora_name": "h3-realism-people-t2v-i2v-r2v.safetensors", "strength_model": 0.85, "strength_clip": 0.85}},
+  "22": {"class_type": "LoraLoader", "inputs": {"model": ["21", 0], "clip": ["21", 1], "lora_name": "camera_motion_h3_lora_v1_3000_pruned.safetensors", "strength_model": 0.8, "strength_clip": 0.8}},
+  "19": {"class_type": "LoadImage", "inputs": {"image": "keyframe.png"}},
+  "2": {"class_type": "MiniMaxH3ReferenceToVideo", "_meta": {"title": "H3 Motion Prompt"}, "inputs": {"clip": ["22", 1], "vae": ["7", 0], "prompt": "MOTION_PROMPT", "width": 960, "height": 544, "length": 124, "ref_image_size": "match", "ref_images": {"ref_image_1": ["19", 0]}}},
+  "5": {"class_type": "KSampler", "inputs": {"seed": 9000, "steps": 8, "cfg": 1.0, "sampler_name": "euler", "scheduler": "normal", "denoise": 1.0, "model": ["22", 0], "positive": ["2", 0], "negative": ["2", 0], "latent_image": ["2", 1]}},
+  "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["7", 0]}},
+  "17": {"class_type": "CreateVideo", "inputs": {"images": ["6", 0], "fps": 24.0}},
+  "18": {"class_type": "SaveVideo", "inputs": {"video": ["17", 0], "filename_prefix": "anime/h3clip", "format": "mp4", "codec": "h264"}}
+}

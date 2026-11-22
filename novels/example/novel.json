@@ -1,0 +1,15 @@
+{
+  "id": "example",
+  "title": "Example Novel",
+  "art_direction": {
+    "style": "animation",
+    "still": "clean 2d animation, soft ink lines, warm lighting",
+    "motion": "gentle camera drift, subtle ambient motion",
+    "negative": "photorealistic, 3d render, text, watermark"
+  },
+  "config": {
+    "lora_training": {
+      "enabled": false
+    }
+  }
+}

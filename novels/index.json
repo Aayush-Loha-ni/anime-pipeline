@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "novels": [
+    {
+      "id": "example",
+      "title": "Example Novel",
+      "path": "novels/example"
+    }
+  ]
+}

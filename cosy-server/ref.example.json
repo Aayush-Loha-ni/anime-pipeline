@@ -1,0 +1,22 @@
+{
+  "text": "I don't believe it. Liorio wins. This time the crowd cheered. Liorio raised one fist, grinning, and pointed it straight at the announcer's booth. Next up.",
+  "wav": "<PROJECT_ROOT>\\cosy-server\\voice_reference.wav",
+  "x_vector_only": false,
+  "language": "English",
+  "narrator": {
+    "enabled": false,
+    "_why": "OFF by default. The clone is the user's own voice but reads flat (UTMOS 3.41, 13.5 st pitch range) because ICL copies the reference's PERFORMANCE. The narrator is a preset voice: more natural and more intelligible (UTMOS 4.32, 20.1 st with the audiobook instruct) but a different person. Turn on to hear it.",
+    "_speakers": [
+      "aiden",
+      "dylan",
+      "eric",
+      "ryan",
+      "vivian",
+      "serena",
+      "sohee",
+      "ono_anna",
+      "uncle_fu"
+    ]
+  },
+  "_text_source": "transcribed with whisper medium.en. small.en on the same clip produced 'Adam Belivet, Liorio wins ... Next stop' - nonsense in three places. In ICL mode ref_text conditions generation, so a wrong transcript teaches wrong pronunciations; this is the same class of bug that put a One Direction lyric on every line."
+}

@@ -1,0 +1,118 @@
+# Pipeline config — YAML + env overrides.
+# ponytail (2026-09-29): `scripts/config.json` is the SINGLE SOURCE OF TRUTH.
+# This file only fills gaps config.json does not set, and loses to it on any
+# disagreement (a warning is printed, never a silent override). Image/T2I
+# params are NOT here — they are in config.json. Resolved via
+# pipeline/config_loader.py (config.yaml → local.yaml → dev.yaml).
+
+project_root: .  # auto-resolved to repo root
+
+comfyui:
+  host: "127.0.0.1"
+  port: 8188
+  auto_start: false
+  start_timeout_sec: 180
+
+paths:
+  output: "videos"
+  images: "images"
+  scenes: "scenes"
+  characters: "characters"
+  voice: "voice"
+  music: "music"
+  sfx: "sfx"
+  comfyui_input: "<COMFYUI_DIR>/ComfyUI-Shared/input"
+  comfyui_output: "<COMFYUI_DIR>/ComfyUI-Shared/output"
+  ffmpeg: "ffmpeg"
+
+models:
+  # Qwen-Image-2.1 keyframes (GGUF DiT in VRAM, INT8 TE offloaded to RAM).
+  # INT8 safetensors alt: qwen_image_2.1_int8.safetensors (needs ~24GB — GGUF preferred on 16GB).
+  t2i_checkpoint: "qwen_image_2.1_Q6_K.gguf"
+  qwen_text_encoder: "qwen3vl_8b_int8_convrot.safetensors"
+  qwen_vae: "qwen_image_2.1_vae_bf16.safetensors"
+
+  # MiniMax H3 Ref2VA pruned-int8 — two tiers (Tomw852 recipe: PDD 8-step +
+  # skin 0.85 + camera 0.80; 540p draft / 720p production, upscaler deferred)
+  h3:
+    # Comfy-Org's video_minimax_h3_r2v recipe, verified live: run unmodified it
+    # preserved the reference still, while this project's previous settings
+    # (8 steps, fp16 video VAE, encoder on CPU, a 3-deep LoraLoader chain of
+    # an 8-step accel + a photoreal-skin + a camera LoRA) produced clips that
+    # ignored the still completely. The only remaining variable is the LoRA:
+    # Comfy-Org ships a 4-step turbo LoRA built for reference-to-video and
+    # loads it MODEL-ONLY so the 32B Qwen3-VL encoder is never patched.
+    fast:  # 20 steps, 124f on the 17k+5 grid
+      checkpoint: "minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+      text_encoder: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+      vae: "minimax_h3_video_vae_int8_convrot.safetensors"
+      audio_vae: "minimax_h3_audio_vae_fp32.safetensors"
+      turbo_lora: "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors"
+      turbo_strength: 1.0
+      encoder_device: "default"
+      sampler: "res_multistep"
+      scheduler: "simple"
+      steps: 20
+      frames: 124
+      fps: 24
+      width: 960
+      height: 544
+    final:  # 720p production, 243f
+      checkpoint: "minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+      text_encoder: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+      vae: "minimax_h3_video_vae_int8_convrot.safetensors"
+      audio_vae: "minimax_h3_audio_vae_fp32.safetensors"
+      turbo_lora: "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors"
+      turbo_strength: 1.0
+      encoder_device: "default"
+      sampler: "res_multistep"
+      scheduler: "simple"
+      steps: 20
+      frames: 243
+      fps: 24
+      width: 1280
+      height: 720
+    oom_fallback_to_fast: true
+
+  # VAE for Qwen-Image-2.1 t2i (see qwen_vae above)
+
+generation:
+  # Active engine: "h3" (MiniMax H3 Ref2VA int8, sole engine 2026-09-25).
+  video_engine: "h3"
+  # Quality tier per render: "fast" | "final"
+  quality: "fast"
+  # Image seed base
+  image_seed_base: 2000
+
+  # Face check (existing)
+  face_check_enabled: true
+  face_check_retry_offset: 50000
+  face_check_max_reframes: 4
+
+  # Lip-sync
+  lipsync_engine: "echo"
+  echo_enabled: true
+
+# ponytail (2026-09-29): the `t2i:` block that used to live here was NEVER
+# merged into CONFIG and contradicted config.json (cfg 7.0 vs image_cfg 1.0,
+# steps 28 vs auto_tune.image_steps 25, euler_ancestral vs image_sampler
+# euler). It read like live config and set nothing. T2I params now live ONLY
+# in scripts/config.json: image_cfg, auto_tune.image_steps, image_sampler,
+# image_scheduler, checkpoint/qwen_text_encoder/qwen_vae (models.* above is
+# documentation of the same filenames). Do not re-add a second t2i block here.
+
+# Token bucket (existing pipeline/tokens.py)
+token:
+  enabled: false
+  render_cost: 1
+  redo_cost: 1
+  new_image: 3
+
+# Captioner (existing pipeline/captioner.py)
+captioner:
+  model: "Salesforce/blip-image-captioning-base"
+  skip_genai: false  # env SKIP_GENAI=1 overrides
+
+# Analytics / debug
+debug: false
+analytics_enabled: false

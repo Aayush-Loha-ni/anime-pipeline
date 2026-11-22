@@ -1,0 +1,146 @@
+{
+  "llm_url": "http://127.0.0.1:8080",
+  "llm_model": "gemma-4-26B-A4B-uncensored-IQ4_XS",
+  "llm_gguf": "<LLAMA_DIR>/models/<your-script-model.gguf>",
+  "llm_temperature": 0.2,
+  "llm_seed": 42,
+  "llm_ctx": 32768,
+  "llm_script_max_tokens": 32768,
+  "llm_script_timeout": 1800,
+  "llm_chapter_chars": 44000,
+  "llm_exe": "<LLAMA_DIR>/llama-cpp/llama-server.exe",
+  "llm_vision_enabled": true,
+  "llm_vlm_gguf": "<LLAMA_DIR>/models/<your-vision-model.gguf>",
+  "llm_vlm_mmproj": "<LLAMA_DIR>/models/<your-mmproj.gguf>",
+  "comfyui_url": "http://localhost:8188",
+  "tts_url": "http://localhost:5003",
+  "tts_model": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
+  "subtitles": true,
+  "output_dir": "novels/example/videos",
+  "chapters_dir": "novels/example/chapters",
+  "images_dir": "novels/example/images",
+  "scenes_dir": "novels/example/scenes",
+  "characters_file": "novels/example/characters/characters.json",
+  "music_dir": "novels/example/music",
+  "sfx_dir": "novels/example/sfx",
+  "ffmpeg": "ffmpeg",
+  "width": 1920,
+  "height": 1080,
+  "platform": "youtube",
+  "voice_speed": 1.0,
+  "caption_safe_margin_v": 320,
+  "kinetic_captions": false,
+  "caption_chunk_words": 3,
+  "music_volume": 0.15,
+  "audio_ducking": true,
+  "lufs_target": -14,
+  "sfx_whoosh": true,
+  "fps": 24,
+  "scene_duration": 5,
+  "image_seed_base": 3000,
+  "video_engine": "h3",
+  "h3_checkpoint": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+  "h3_text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+  "h3_vae": "minimax_h3_video_vae_int8_convrot.safetensors",
+  "h3_audio_vae": "minimax_h3_audio_vae_fp32.safetensors",
+  "h3_steps": 20,
+  "h3_frames": 124,
+  "h3_fps": 24,
+  "h3_final_checkpoint": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+  "h3_final_steps": 20,
+  "h3_final_frames": 243,
+  "h3_final_fps": 24,
+  "sheet_anchor_denoise": 0.7,
+  "sheet_anchor_head_frac": 0.06,
+  "sheet_anchor_head_span": 0.3,
+  "qwen_lora_trigger": "ohwx_edvyn",
+  "qwen_lora_trigger_owner": "edvyn_crael",
+  "checkpoint": "qwen_image_2.1_Q6_K.gguf",
+  "qwen_text_encoder": "qwen3vl_8b_int8_convrot.safetensors",
+  "qwen_vae": "qwen_image_2.1_vae_bf16.safetensors",
+  "comfyui_input": "<COMFYUI_DIR>/ComfyUI-Shared/input",
+  "comfyui_output": "<COMFYUI_DIR>/ComfyUI-Shared/output",
+  "comfyui_output_fallback": "",
+  "auto_tune": {
+    "history": [
+      {
+        "at": "2026-09-04T17:24:10",
+        "changes": [
+          "bright_boost on (dark frames)"
+        ]
+      },
+      {
+        "at": "2026-09-28T17:28:38",
+        "changes": [
+          "bright_boost->True (dark frames 32)"
+        ]
+      },
+      {
+        "at": "2026-09-29T11:22:09",
+        "changes": [
+          "bright_boost reverted to False (avg_bright 32->27)",
+          "face_budget->(3 proposed in ledger; set face_check_max_reframes to apply)"
+        ]
+      },
+      {
+        "at": "2026-09-29T12:25:15",
+        "changes": [
+          "bright_boost->True (dark frames 21)"
+        ]
+      },
+      {
+        "at": "2026-09-29T14:36:20",
+        "changes": [
+          "bright_boost reverted to False (avg_bright 21->15)"
+        ]
+      },
+      {
+        "at": "2026-09-30T19:08:10",
+        "changes": [
+          "face_budget->(3 proposed in ledger; set face_check_max_reframes to apply)"
+        ]
+      }
+    ],
+    "image_steps": 25
+  },
+  "narration_only": true,
+  "image_cfg": 1.0,
+  "voice_speeds": {},
+  "face_check_enabled": true,
+  "face_check_retry_offset": 50000,
+  "face_check_max_reframes": 4,
+  "motion_prompt_extend": false,
+  "lipsync_engine": "echo",
+  "shorts_enabled": false,
+  "vlm_narrative": false,
+  "animation_style": "gothic",
+  "lora_strength": 0.45,
+  "lora_training": {
+    "enabled": false,
+    "python": "python",
+    "aitk_dir": "<AI_TOOLKIT_DIR>",
+    "config_dir": "_training/aitk_configs",
+    "output_dir": "_training/output",
+    "model": "<MODEL_DIR>/<your-image-model>.safetensors",
+    "extras": "<MODEL_DIR>",
+    "arch": "qwen_image_2",
+    "steps": 400,
+    "lr": 0.0001,
+    "linear": 16,
+    "linear_alpha": 16,
+    "timeout_s": 14400
+  },
+  "image_sampler": "euler",
+  "image_scheduler": "simple",
+  "h3_turbo_lora": "minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors",
+  "h3_turbo_strength": 1.0,
+  "h3_encoder_device": "default",
+  "h3_sampler": "res_multistep",
+  "h3_scheduler": "simple",
+  "quality": "fast",
+  "publish": {
+    "enabled": false,
+    "platforms": [],
+    "privacy": "private"
+  }
+}
