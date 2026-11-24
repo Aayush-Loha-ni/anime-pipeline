@@ -65,6 +65,9 @@ voice/
 music/
 sfx/
 characters/
+# Exception: the example novel's character bible is part of the public template.
+!novels/example/characters/
+!novels/example/characters/characters.json
 dataset/
 _training/
 _models/
