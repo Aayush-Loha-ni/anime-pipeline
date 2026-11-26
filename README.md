@@ -28,15 +28,13 @@ Check each model's own license before commercial use. This repo's MIT license co
 
 ## Quick start
 
-1. **Install the requirements above.** Put your model files wherever you like.
-2. **Edit `hermes-skill/scripts/config.json`.** Every `<...>` placeholder must be replaced with a real path on your machine:
-   - `llm_gguf`, `llm_exe`, `llm_vlm_gguf`, `llm_vlm_mmproj` → your llama.cpp model/server paths.
-   - `comfyui_input`, `comfyui_output` → your ComfyUI shared folders.
-   - The `output_dir`, `chapters_dir`, `images_dir`, `scenes_dir`, `characters_file` keys default to `novels/example/...`.
-3. **Record a short, clean narration sample** (a few sentences is enough). Place it in `cosy-server/`, copy `cosy-server/ref.example.json` to `cosy-server/ref.json`, and set the `wav` path and the exact `text` transcript. The transcript is required — an empty one stops the voice server on purpose.
-4. **Start the services.** Double-click `Open Dashboard.bat`, or run `watchdog.bat` to keep the dashboard, ComfyUI, and voice server alive automatically.
-5. **Open the dashboard** at `http://localhost:8000/`, pick the `example` novel, and start chapter 1.
-6. **Watch the progress** in the dashboard or in `progress_live.json`. The finished MP4 lands in `novels/example/videos/`.
+1. **Install Python dependencies** from the repo root: `pip install -r requirements.txt`. On Blackwell NVIDIA cards, install a `cu128` PyTorch build first (see the note in that file).
+2. **Install the services** listed under Requirements and place the models from [MODELS.md](MODELS.md) in your ComfyUI and llama.cpp folders. This is the only large download — roughly 60 GB.
+3. **Run `python setup.py`** once. It asks for your local paths, fills in `hermes-skill/scripts/config.json`, creates the example novel's folders, and writes a `cosy-server/ref.json` template. It never sends anything anywhere.
+4. **Provide your own voice.** Record a short clean sample to `cosy-server/voice_reference.wav` and put its word-for-word transcript in `cosy-server/ref.json`. An empty transcript stops the voice server on purpose.
+5. **Check readiness:** `python verify_setup.py`. It lists anything still missing — no guessing required.
+6. **Start the services.** Double-click `Open Dashboard.bat`, or run `watchdog.bat` to keep the dashboard, ComfyUI, and voice server alive automatically.
+7. **Open the dashboard** at `http://localhost:8000/`, pick the `example` novel, and start chapter 1. The finished MP4 lands in `novels/example/videos/`.
 
 To use your own story, add a folder under `novels/` with `novel.json`, `chapters/`, and `characters/characters.json`, then register it in `novels/index.json`.
 
